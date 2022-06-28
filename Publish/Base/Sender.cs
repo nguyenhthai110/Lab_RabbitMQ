@@ -53,7 +53,24 @@ namespace Publish.Base
 
         public void Send(byte[] body, string routingKey)
         {
-            Rabbit.Publish(rabbitConfig.ExchangeKey, routingKey, body);
+            var fail = 0;
+            while (fail < 10)
+            {
+                try
+                {
+                    Rabbit.Publish(rabbitConfig.ExchangeKey, routingKey, body);
+                    break;
+                }
+                catch (Exception)
+                {
+
+                    fail++;
+                    System.Threading.Thread.Sleep(500);
+                }
+            }
+
+
+
         }
     }
 }
